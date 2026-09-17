@@ -1,0 +1,35 @@
+# GLI training + SSA domain adaptation (full fine-tuning, 5-fold CV).
+
+data:
+  gli_root: /path/to/BraTS2021/GLI               # 4-channel NIfTI: T1, T1-Gd, T2, T2-FLAIR
+  ssa_root: /path/to/BraTS-Africa/SSA             # no ET annotations
+  num_classes: 3                                   # WT, TC, ET (ET n/a for SSA)
+  preprocessing:
+    resample_mm: 1.0
+    skull_strip: true
+    normalize: zscore_per_modality_over_brain_mask
+    center_crop: true
+
+model:
+  arch: unet             # unet | att_unet | transunet | swin_unetr
+
+train:
+  batch_size: 2
+  optimizer: adam
+  lr: 1.0e-4
+  loss: dice_ce
+  max_epochs: 200
+  early_stopping_patience: 20
+  seed: 42
+
+adaptation:
+  method: full_fine_tune
+  gli_checkpoint: results/segmentation/<model>/gli_best.pt
+  cv_folds: 5
+  fold_sizes: [ [117, 29], [117, 29], [117, 29], [116, 30], [117, 29] ]   # train/val per fold
+  max_epochs: 150
+  early_stopping_patience: 20
+  metrics_scope: [WT, TC]     # ET excluded — BraTS-Africa has no ET labels
+
+output:
+  checkpoint_dir: results/segmentation

@@ -1,0 +1,22 @@
+# Explainability evaluation for both classification and segmentation models.
+
+classification_xai:
+  methods: [gradcam, rise]
+  target_layers:
+    resnet18: final_residual_block
+    efficientnet_b0: last_mbconv_block
+    vit_small: final_transformer_norm
+  metrics: [overlap, faithfulness, pointing_game]
+  eval_split: ssa_all       # all 438 SSA slices
+
+segmentation_xai:
+  methods: [gradcam, gradcam++]
+  target_layers:
+    unet: bottleneck
+    att_unet: bottleneck
+    transunet: final_transformer_encoder_norm
+    swin_unetr: last_swin_stage_norm
+  metrics: [overlap, faithfulness]
+  metrics_scope: [WT, TC]    # ET excluded
+  eval_split: fold0_ssa_val   # 29 subjects
+  conditions: [zero_shot, adapted]

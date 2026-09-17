@@ -1,0 +1,25 @@
+# Zero-shot classification: train on GLI slices, evaluate on SSA slices, no fine-tuning.
+
+data:
+  gli_manifest: /path/to/gli_slices_manifest.csv     # 438 GLI slices (axial/coronal/sagittal, max tumour area)
+  ssa_manifest: /path/to/ssa_slices_manifest.csv      # 438 SSA slices, labels binarised ED=1 / NCR=0
+  image_size: 224
+  num_classes: 2                                       # ED vs NCR (SSA); GLI uses the same binarisation for comparability
+
+model:
+  arch: resnet18        # resnet18 | efficientnet_b0 | vit_small
+  pretrained: imagenet   # via timm
+
+train:
+  batch_size: 32
+  optimizer: adam
+  lr: 1.0e-4
+  weight_decay: 1.0e-4
+  loss: cross_entropy
+  max_epochs: 100
+  early_stopping_patience: 10
+  seed: 42
+
+output:
+  checkpoint_dir: results/classification
+  metric_for_best: gli_val_auc

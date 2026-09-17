@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Data & checkpoints
+data/
+*.ckpt
+*.pt
+*.pth
+*.onnx
+*.nii
+*.nii.gz
+
+# Results / logs (keep structure + tracked summary files, ignore run artefacts)
+results/*
+!results/.gitkeep
+!results/key_results.csv
+figures/*.png
+!figures/.gitkeep
+!figures/classification_xai_metrics.png
+wandb/
+runs/
+*.log
+
+# Notebooks
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
